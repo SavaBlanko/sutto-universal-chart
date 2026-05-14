@@ -1,0 +1,4 @@
+apiVersion: v2
+description: Sutto universal Helm chart for deploy your apps to Kubernetes
+name: universal-chart
+version: 1.0.1
