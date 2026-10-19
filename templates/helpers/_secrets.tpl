@@ -40,19 +40,19 @@
 {{- end -}}
 
 {{- define "helpers.secrets.render" -}}
-{{- $v := dict -}}
-{{- if kindIs "string" .value -}}
-{{- $v = fromYaml .value }}
-{{- else -}}
-{{- $v = .value }}
+{{- $v := .value -}}
+{{- if kindIs "string" $v -}}
+  {{- $v = fromYaml $v -}}
 {{- end -}}
-{{- range $key, $value := $v }}
-{{- if kindIs "string" $value }}
-{{ printf "%s: %s" $key (include "helpers.secrets.encode" (dict "value" $value)) }}
-{{- else }}
-{{ $key }}: {{$value | toJson | b64enc }}
+{{- $encoded := dict -}}
+{{- range $key, $value := $v -}}
+  {{- if kindIs "string" $value -}}
+    {{- $_ := set $encoded $key (include "helpers.secrets.encode" (dict "value" $value)) -}}
+  {{- else -}}
+    {{- $_ := set $encoded $key ($value | toJson | b64enc) -}}
+  {{- end -}}
 {{- end -}}
-{{- end -}}
+{{- toYaml $encoded -}}
 {{- end -}}
 
 {{- define "helpers.secrets.renderSealed" -}}
