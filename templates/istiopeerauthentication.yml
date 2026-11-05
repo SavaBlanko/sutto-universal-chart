@@ -1,0 +1,31 @@
+{{- range $name, $peer := .Values.istiopeerauthentications }}
+{{- if not ($peer.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.istiopeerauthentication.apiVersion" $ }}
+kind: PeerAuthentication
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($peer.name | default $name) "context" $) }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $peer.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  {{- if or $.Values.generic.annotations $peer.annotations }}
+  annotations:
+    {{- with $.Values.generic.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+    {{- with $peer.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  {{- end }}
+spec:
+  {{- with $peer.selector }}
+  selector:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $peer.mtls }}
+  mtls:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $peer.portLevelMtls }}
+  portLevelMtls:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

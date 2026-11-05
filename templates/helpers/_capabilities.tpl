@@ -173,3 +173,27 @@
 {{- print "networking.istio.io/v1" -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "helpers.capabilities.istiopeerauthentication.apiVersion" -}}
+{{- $version := "security.istio.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .apiVersions -}}
+    {{- with .istioPeerAuthentication -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.istioauthorizationpolicy.apiVersion" -}}
+{{- $version := "security.istio.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .apiVersions -}}
+    {{- with .istioAuthorizationPolicy -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
