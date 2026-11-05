@@ -553,6 +553,7 @@ ServersTransportTCP: {}
 
 istiogateways: {}
   # nginx:
+  #   disabled: false
   #   name: nginx-gateway
   #   selector:
   #     istio: ingress
@@ -566,6 +567,7 @@ istiogateways: {}
 
 istiovirtualservices: {}
   # nginx:
+  #   disabled: false
   #   name: nginx-virtualservice
   #   gateways:
   #     - nginx-gateway
@@ -618,3 +620,25 @@ istiodestinationrules: {}
   #   exportTo:
   #     - "."
   #     - "another-namespace"
+
+istiopeerauthentications: {}
+  # default:
+  #   disabled: false
+  #   mtls:
+  #     mode: STRICT
+
+istioauthorizationpolicies: {}
+  # postgres-allow:
+  #   disabled: false
+  #   selector:
+  #     matchLabels:
+  #       app.kubernetes.io/name: postgresql
+  #   action: ALLOW
+  #   rules:
+  #     - from:
+  #         - source:
+  #             principals:
+  #               - "cluster.local/ns/{{ $.Release.Namespace }}/sa/name-of-sa"
+  #       to:
+  #         - operation:
+  #             ports: ["5432"]
