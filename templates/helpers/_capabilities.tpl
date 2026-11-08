@@ -209,3 +209,7 @@
 {{- define "helpers.capabilities.httproute.apiVersion" -}}
 {{- "gateway.networking.k8s.io/v1" -}}
 {{- end -}}
+
+{{- define "helpers.capabilities.istioenvoyfilter.apiVersion" -}}
+{{- "networking.istio.io/v1alpha3" -}}
+{{- end -}}

@@ -692,3 +692,30 @@ httproutes: {}
 #            port: 80
 #          - name: metrics
 #            port: 8080
+
+istioenvoyfilters: {}
+#  gateway-response-headers:
+#    disabled: false
+#    priority: 0
+#    workloadSelector:
+#      labels:
+#        app: my-app
+#    configPatches:
+#      - applyTo: HTTP_FILTER
+#        match:
+#          context: SIDECAR_INBOUND
+#          listener:
+#            filterChain:
+#              filter:
+#                name: envoy.filters.network.http_connection_manager
+#        patch:
+#          operation: MERGE
+#          value:
+#            name: envoy.filters.network.http_connection_manager
+#            typed_config:
+#              "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+#              response_headers_to_add:
+#                - header:
+#                    key: x-powered-by
+#                    value: my-app
+#                  append_action: OVERWRITE_IF_EXISTS_OR_ADD
