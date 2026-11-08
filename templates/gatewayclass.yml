@@ -1,0 +1,28 @@
+{{- range $name, $gatewayclass := .Values.gatewayclasses }}
+{{- if not ($gatewayclass.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.gatewayclass.apiVersion" $ }}
+kind: GatewayClass
+metadata:
+  name: {{ $gatewayclass.name | default $name }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $gatewayclass.labels }}
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | nindent 4 }}
+    {{- with $gatewayclass.annotations }}
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+spec:
+  controllerName: {{ required (printf "gatewayclasses.%s.controllerName is required" $name) $gatewayclass.controllerName | quote }}
+  {{- with $gatewayclass.description }}
+  description: {{ include "helpers.tplvalues.render" (dict "value" . "context" $) | quote }}
+  {{- end }}
+  {{- with $gatewayclass.parametersRef }}
+  parametersRef:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

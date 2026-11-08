@@ -642,3 +642,51 @@ istioauthorizationpolicies: {}
   #       to:
   #         - operation:
   #             ports: ["5432"]
+
+gatewayclasses: {}
+#  istio:
+#    disabled: false
+#    controllerName: istio.io/gateway-controller
+#    description: Gateway API controller
+
+gateways: {}
+#  main:
+#    disabled: false
+#    gatewayClassName: istio
+#    listeners:
+#      - name: http
+#        hostname: example.com
+#        port: 80
+#        protocol: HTTP
+#        allowedRoutes:
+#          namespaces:
+#            from: Same
+#      - name: https
+#        hostname: example.com
+#        port: 443
+#        protocol: HTTPS
+#        tls:
+#          mode: Terminate
+#          certificateRefs:
+#            - kind: Secret
+#              name: example-com-tls
+#        allowedRoutes:
+#          namespaces:
+#            from: Same
+
+httproutes: {}
+#  app:
+#    disabled: false
+#    parentRefs:
+#      - name: '{{ include "helpers.app.fullname" (dict "name" "main" "context" $) }}'
+#        sectionName: https
+#    hostnames:
+#      - app.example.com
+#    rules:
+#      - matches:
+#          - path:
+#              type: PathPrefix
+#              value: /
+#        backendRefs:
+#          - name: '{{ include "helpers.app.fullname" (dict "name" "app" "context" $) }}'
+#            port: 8080

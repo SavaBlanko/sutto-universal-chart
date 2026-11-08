@@ -1,0 +1,32 @@
+{{- range $name, $gateway := .Values.gateways }}
+{{- if not ($gateway.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.gateway.apiVersion" $ }}
+kind: Gateway
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($gateway.name | default $name) "context" $) }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $gateway.labels }}
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | nindent 4 }}
+    {{- with $gateway.annotations }}
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+spec:
+  gatewayClassName: {{ required (printf "gateways.%s.gatewayClassName is required" $name) $gateway.gatewayClassName | quote }}
+  listeners:
+    {{- include "helpers.tplvalues.render" (dict "value" (required (printf "gateways.%s.listeners is required" $name) $gateway.listeners) "context" $) | nindent 4 }}
+  {{- with $gateway.addresses }}
+  addresses:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $gateway.infrastructure }}
+  infrastructure:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

@@ -197,3 +197,15 @@
 {{- end -}}
 {{- $version -}}
 {{- end -}}
+
+{{- define "helpers.capabilities.gatewayclass.apiVersion" -}}
+{{- "gateway.networking.k8s.io/v1" -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.gateway.apiVersion" -}}
+{{- "gateway.networking.k8s.io/v1" -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.httproute.apiVersion" -}}
+{{- "gateway.networking.k8s.io/v1" -}}
+{{- end -}}
