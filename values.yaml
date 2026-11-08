@@ -688,5 +688,7 @@ httproutes: {}
 #              type: PathPrefix
 #              value: /
 #        backendRefs:
-#          - name: '{{ include "helpers.app.fullname" (dict "name" "app" "context" $) }}'
+#          - serviceName: http # pointer to entity of `services:`
+#            port: 80
+#          - name: metrics
 #            port: 8080
