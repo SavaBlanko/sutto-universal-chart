@@ -6,7 +6,8 @@
 kind: Certificate
 apiVersion: cert-manager.io/v1
 metadata:
-  name: {{ include "helpers.app.fullname" (dict "name" $name "context" $) }}
+  name: {{ include "helpers.app.fullname" (dict "name" ($cert.name | default $name) "context" $) }}
+  namespace: {{ $cert.namespace | default $.Release.Namespace | quote }}
   labels:
     {{- include "helpers.app.labels" $ | nindent 4 }}
 spec:
