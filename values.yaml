@@ -1,3 +1,19 @@
+#global:
+#  # Reserved for Bitnami common library (list of API versions).
+#  apiVersions: []
+#
+#  # Overrides for your chart's resource API versions.
+#  resourceApiVersions: {}
+#    cronJob: batch/v1
+#    deployment: apps/v1
+#    statefulSet: apps/v1
+#    ingress: networking.k8s.io/v1
+#    pdb: policy/v1
+#    istioGateway: networking.istio.io/v1
+#    istioVirtualService: networking.istio.io/v1
+#    istioDestinationRule: networking.istio.io/v1
+#    istioPeerAuthentication: security.istio.io/v1
+#    istioAuthorizationPolicy: security.istio.io/v1
 # generic - values that uses by all sutto-universal-chart templates
 generic:
   labels: {}
@@ -112,7 +128,6 @@ ingresses: {}
 #      - nixys.org
 #      secretName: "nixys-tls"
 
-
 services: {}
 #  nginx:
 #    clusterIP: None
@@ -122,8 +137,6 @@ services: {}
 #      port: 8080
 #    extraSelectorLabels:
 #      app: my-nginx
-
-
 
 deploymentsGeneral: {}
 deployments: {}
@@ -366,8 +379,6 @@ extraDeploy: {}
 #        - protocol: TCP
 #          port: 5978
 
-
-
 ingressroutes: {}
   # test: 
   #   entryPoints: 
@@ -552,96 +563,96 @@ ServersTransportTCP: {}
   #     trustDomain: "spiffe://trust-domain"
 
 istiogateways: {}
-  # nginx:
-  #   disabled: false
-  #   name: nginx-gateway
-  #   selector:
-  #     istio: ingress
-  #   servers:
-  #     - port:
-  #         number: 80
-  #         name: http
-  #         protocol: HTTP
-  #       hosts:
-  #         - "nginx.example.com"
+#  nginx:
+#    disabled: false
+#    name: nginx-gateway
+#    selector:
+#      istio: ingress
+#    servers:
+#      - port:
+#          number: 80
+#          name: http
+#          protocol: HTTP
+#        hosts:
+#          - "nginx.example.com"
 
 istiovirtualservices: {}
-  # nginx:
-  #   disabled: false
-  #   name: nginx-virtualservice
-  #   gateways:
-  #     - nginx-gateway
-  #   hosts:
-  #     - "nginx.example.com"
-  #   http:
-  #     - match:
-  #         - uri:
-  #             prefix: "/"
-  #       route:
-  #         - destination:
-  #             host: nginx-service.default.svc.cluster.local
-  #             port:
-  #               number: 80
+#  nginx:
+#    disabled: false
+#    name: nginx-virtualservice
+#    gateways:
+#      - nginx-gateway
+#    hosts:
+#      - "nginx.example.com"
+#    http:
+#      - match:
+#          - uri:
+#              prefix: "/"
+#        route:
+#          - destination:
+#              host: nginx-service.default.svc.cluster.local
+#              port:
+#                number: 80
 
 istiodestinationrules: {}
-  # nginx:
-  #   name: nginx-destinationrule
-  #   host: "nginx-service.default.svc.cluster.local"
-  #   trafficPolicy:
-  #     loadBalancer:
-  #       simple: ROUND_ROBIN
-  #     connectionPool:
-  #       http:
-  #         http1MaxPendingRequests: 500
-  #         maxRequestsPerConnection: 50
-  #     outlierDetection:
-  #       consecutiveGatewayErrors: 3
-  #       interval: 5s
-  #       baseEjectionTime: 15s
-  #   subsets:
-  #     - name: v1
-  #       labels:
-  #         app: nginx
-  #       trafficPolicy:
-  #         loadBalancer:
-  #           simple: LEAST_CONN
-  #         connectionPool:
-  #           tcp:
-  #             maxConnections: 200
-  #     - name: v2
-  #       labels:
-  #         version: v2
-  #       trafficPolicy:
-  #         loadBalancer:
-  #           simple: RANDOM
-  #         connectionPool:
-  #           http:
-  #             http2MaxRequests: 2000
-  #   exportTo:
-  #     - "."
-  #     - "another-namespace"
+#  nginx:
+#    name: nginx-destinationrule
+#    host: "nginx-service.default.svc.cluster.local"
+#    trafficPolicy:
+#      loadBalancer:
+#        simple: ROUND_ROBIN
+#      connectionPool:
+#        http:
+#          http1MaxPendingRequests: 500
+#          maxRequestsPerConnection: 50
+#      outlierDetection:
+#        consecutiveGatewayErrors: 3
+#        interval: 5s
+#        baseEjectionTime: 15s
+#    subsets:
+#      - name: v1
+#        labels:
+#          app: nginx
+#        trafficPolicy:
+#          loadBalancer:
+#            simple: LEAST_CONN
+#          connectionPool:
+#            tcp:
+#              maxConnections: 200
+#      - name: v2
+#        labels:
+#          version: v2
+#        trafficPolicy:
+#          loadBalancer:
+#            simple: RANDOM
+#          connectionPool:
+#            http:
+#              http2MaxRequests: 2000
+#    exportTo:
+#      - "."
+#      - "another-namespace"
 
 istiopeerauthentications: {}
-  # default:
-  #   disabled: false
-  #   mtls:
-  #     mode: STRICT
+#  default:
+#    disabled: false
+#    mtls:
+#      mode: STRICT
 
 istioauthorizationpolicies: {}
-  # postgres-allow:
-  #   disabled: false
-  #   selector:
-  #     matchLabels:
-  #       app.kubernetes.io/name: postgresql
-  #   action: ALLOW
-  #   rules:
-  #     - from:
-  #         - source:
-  #             principals:
-  #               - "cluster.local/ns/{{ $.Release.Namespace }}/sa/name-of-sa"
-  #       to:
-  #         - operation:
-  #             ports: ["5432"]
+#  postgres-allow:
+#    disabled: false
+#    selector:
+#      matchLabels:
+#        app.kubernetes.io/name: postgresql
+#    action: ALLOW
+#    rules:
+#      - from:
+#          - source:
+#              principals:
+#                - "cluster.local/ns/{{ $.Release.Namespace }}/sa/name-of-sa"
+#        to:
+#          - operation:
+#              ports: ["5432"]
 
 gatewayclasses: {}
 #  istio:
@@ -692,6 +703,9 @@ httproutes: {}
 #            port: 80
 #          - name: metrics
 #            port: 8080
+#          TODO:
+#          - serviceName: http
+#            servicePort: 80 # TODO
 
 istioenvoyfilters: {}
 #  gateway-response-headers:
@@ -719,3 +733,58 @@ istioenvoyfilters: {}
 #                    key: x-powered-by
 #                    value: my-app
 #                  append_action: OVERWRITE_IF_EXISTS_OR_ADD
+
+networkattachmentdefinitions: {}
+#  macvlan-conf01:
+#    disabled: false
+#    config:
+#      cniVersion: "0.3.1"
+#      type: macvlan
+#      master: eth0
+#      mode: bridge
+#      ipam:
+#        type: host-local
+#        ranges:
+#          - - subnet: 10.220.8.0/24
+#              rangeStart: 10.220.8.201
+#              rangeEnd: 10.220.8.203
+#              gateway: 10.220.8.1
+#  macvlan-conf01:
+#    disabled: false
+#    config: |
+#      {
+#        "cniVersion": "0.3.1",
+#        "type": "macvlan",
+#        "master": "eth0",
+#        "mode": "bridge",
+#        "ipam": {
+#          "type": "host-local",
+#          "ranges": [
+#            [
+#              {
+#                "subnet": "10.220.8.0/24",
+#                "rangeStart": "10.220.8.201",
+#                "rangeEnd": "10.220.8.203",
+#                "gateway": "10.220.8.1"
+#              }
+#            ]
+#          ]
+#        }
+#      }
+#
+
+kgatewaytrafficpolicies: {}
+#  app:
+#    disabled: false
+#    targetRefs:
+#      - group: gateway.networking.k8s.io
+#        kind: HTTPRoute
+#        name: '{{ include "helpers.app.fullname" (dict "name" "app" "context" $) }}'
+#    retry:
+#      attempts: 3
+#      perTryTimeout: 5s
+#      retryOn:
+#        - "5xx"
+#        - connect-failure
+#    timeouts:
+#      request: 30s

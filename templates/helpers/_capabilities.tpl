@@ -1,183 +1,175 @@
 {{- define "helpers.capabilities.helmVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.helmVersion }}
-{{- .Values.global.helmVersion -}}
-{{- else -}}
+{{- $version := "v3" -}}
 {{- if typeIs "string" .Capabilities.KubeVersion -}}
-{{- "v2" -}}
-{{- else -}}
-{{- "v3" -}}
+  {{- $version = "v2" -}}
 {{- end -}}
+{{- with .Values.global -}}
+  {{- with .helmVersion -}}
+    {{- $version = . -}}
+  {{- end -}}
 {{- end -}}
-{{- else }}
-{{- if typeIs "string" .Capabilities.KubeVersion -}}
-{{- "v2" -}}
-{{- else -}}
-{{- "v3" -}}
+{{- $version -}}
 {{- end -}}
-{{- end -}}
-{{- end -}}
+
 
 {{- define "helpers.capabilities.kubeVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.kubeVersion }}
-{{- .Values.global.kubeVersion -}}
-{{- else }}
-{{- if semverCompare "<3" (include "helpers.capabilities.helmVersion" $) -}}
-{{- default .Capabilities.KubeVersion .Values.kubeVersion -}}
-{{- else -}}
-{{- default .Capabilities.KubeVersion.Version .Values.kubeVersion -}}
+{{- $version := .Capabilities.KubeVersion.Version -}}
+{{- with .Values.kubeVersion -}}
+  {{- $version = . -}}
 {{- end -}}
+{{- with .Values.global -}}
+  {{- with .kubeVersion -}}
+    {{- $version = . -}}
+  {{- end -}}
 {{- end -}}
-{{- else }}
-{{- if .Capabilities.KubeVersion.Version -}}
-{{- default .Capabilities.KubeVersion.Version .Values.kubeVersion -}}
-{{- else -}}
-{{- default .Capabilities.KubeVersion .Values.kubeVersion -}}
+{{- $version -}}
 {{- end -}}
-{{- end -}}
-{{- end -}}
+
 
 {{- define "helpers.capabilities.cronJob.apiVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.apiVersions.cronJob }}
-{{- .Values.global.apiVersions.cronJob -}}
-{{- else if semverCompare "<1.21-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "batch/v1beta1" -}}
-{{- else -}}
-{{- print "batch/v1" -}}
+{{- $version := "batch/v1" -}}
+{{- if semverCompare "<1.21-0" (include "helpers.capabilities.kubeVersion" .) -}}
+  {{- $version = "batch/v1beta1" -}}
 {{- end -}}
-{{- else if semverCompare "<1.21-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "batch/v1beta1" -}}
-{{- else -}}
-{{- print "batch/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .cronJob -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
+{{- $version -}}
 {{- end -}}
+
 
 {{- define "helpers.capabilities.deployment.apiVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.apiVersions.deployment }}
-{{- .Values.global.apiVersions.deployment -}}
-{{- else if semverCompare "<1.14-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "extensions/v1beta1" -}}
-{{- else -}}
-{{- print "apps/v1" -}}
+{{- $version := "apps/v1" -}}
+{{- if semverCompare "<1.14-0" (include "helpers.capabilities.kubeVersion" .) -}}
+  {{- $version = "extensions/v1beta1" -}}
 {{- end -}}
-{{- else if semverCompare "<1.14-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "extensions/v1beta1" -}}
-{{- else -}}
-{{- print "apps/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .deployment -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
+{{- $version -}}
 {{- end -}}
+
 
 {{- define "helpers.capabilities.statefulSet.apiVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.apiVersions.statefulSet }}
-{{- .Values.global.apiVersions.statefulSet -}}
-{{- else if semverCompare "<1.14-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "apps/v1beta1" -}}
-{{- else -}}
-{{- print "apps/v1" -}}
+{{- $version := "apps/v1" -}}
+{{- if semverCompare "<1.14-0" (include "helpers.capabilities.kubeVersion" .) -}}
+  {{- $version = "apps/v1beta1" -}}
 {{- end -}}
-{{- else if semverCompare "<1.14-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "apps/v1beta1" -}}
-{{- else -}}
-{{- print "apps/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .statefulSet -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
+{{- $version -}}
 {{- end -}}
+
 
 {{- define "helpers.capabilities.ingress.apiVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.apiVersions.ingress }}
-{{- .Values.global.apiVersions.ingress -}}
-{{- else if semverCompare "<1.14-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "extensions/v1beta1" -}}
-{{- else if semverCompare "<1.19-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "networking.k8s.io/v1beta1" -}}
-{{- else -}}
-{{- print "networking.k8s.io/v1" -}}
+{{- $version := "networking.k8s.io/v1" -}}
+{{- $kubeVersion := include "helpers.capabilities.kubeVersion" . -}}
+{{- if semverCompare "<1.14-0" $kubeVersion -}}
+  {{- $version = "extensions/v1beta1" -}}
+{{- else if semverCompare "<1.19-0" $kubeVersion -}}
+  {{- $version = "networking.k8s.io/v1beta1" -}}
 {{- end -}}
-{{- else if semverCompare "<1.14-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "extensions/v1beta1" -}}
-{{- else if semverCompare "<1.19-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "networking.k8s.io/v1beta1" -}}
-{{- else -}}
-{{- print "networking.k8s.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .ingress -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
+{{- $version -}}
 {{- end -}}
+
 
 {{- define "helpers.capabilities.pdb.apiVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.apiVersions.pdb }}
-{{- .Values.global.apiVersions.pdb -}}
-{{- else if semverCompare "<1.21-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "policy/v1beta1" -}}
-{{- else -}}
-{{- print "policy/v1" -}}
+{{- $version := "policy/v1" -}}
+{{- if semverCompare "<1.21-0" (include "helpers.capabilities.kubeVersion" .) -}}
+  {{- $version = "policy/v1beta1" -}}
 {{- end -}}
-{{- else if semverCompare "<1.21-0" (include "helpers.capabilities.kubeVersion" $) -}}
-{{- print "policy/v1beta1" -}}
-{{- else -}}
-{{- print "policy/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .pdb -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
+{{- $version -}}
 {{- end -}}
+
 
 {{- define "helpers.capabilities.traefik.apiVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.apiVersions.traefik }}
-{{- .Values.global.apiVersions.traefik -}}
-{{- else if .Capabilities.APIVersions.Has "traefik.io/v1alpha1" -}}
-{{- print "traefik.io/v1alpha1" -}}
+{{- $version := "" -}}
+{{- if .Capabilities.APIVersions.Has "traefik.io/v1alpha1" -}}
+  {{- $version = "traefik.io/v1alpha1" -}}
 {{- else if .Capabilities.APIVersions.Has "traefik.containo.us/v1alpha1" -}}
-{{- print "traefik.containo.us/v1alpha1" -}}
+  {{- $version = "traefik.containo.us/v1alpha1" -}}
 {{- end -}}
-{{- else if .Capabilities.APIVersions.Has "traefik.io/v1alpha1" -}}
-{{- print "traefik.io/v1alpha1" -}}
-{{- else if .Capabilities.APIVersions.Has "traefik.containo.us/v1alpha1" -}}
-{{- print "traefik.containo.us/v1alpha1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .traefik -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
+{{- $version -}}
 {{- end -}}
+
 
 {{- define "helpers.capabilities.istiogateway.apiVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.apiVersions.istioGateway }}
-{{- .Values.global.apiVersions.istioGateway -}}
-{{- else if .Capabilities.APIVersions.Has "networking.istio.io/v1" -}}
-{{- print "networking.istio.io/v1" -}}
+{{- $version := "networking.istio.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .istioGateway -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
-{{- else if .Capabilities.APIVersions.Has "networking.istio.io/v1" -}}
-{{- print "networking.istio.io/v1" -}}
+{{- $version -}}
 {{- end -}}
-{{- end -}}
+
 
 {{- define "helpers.capabilities.istiovirtualservice.apiVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.apiVersions.istioVirtualService }}
-{{- .Values.global.apiVersions.istioVirtualService -}}
-{{- else if .Capabilities.APIVersions.Has "networking.istio.io/v1" -}}
-{{- print "networking.istio.io/v1" -}}
+{{- $version := "networking.istio.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .istioVirtualService -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
-{{- else if .Capabilities.APIVersions.Has "networking.istio.io/v1" -}}
-{{- print "networking.istio.io/v1" -}}
-{{- end -}}
+{{- $version -}}
 {{- end -}}
 
+
 {{- define "helpers.capabilities.istiodestinationrule.apiVersion" -}}
-{{- if .Values.global }}
-{{- if .Values.global.apiVersions.istioDestinationRule }}
-{{- .Values.global.apiVersions.istioDestinationRule -}}
-{{- else if .Capabilities.APIVersions.Has "networking.istio.io/v1" -}}
-{{- print "networking.istio.io/v1" -}}
+{{- $version := "networking.istio.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .istioDestinationRule -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
-{{- else if .Capabilities.APIVersions.Has "networking.istio.io/v1" -}}
-{{- print "networking.istio.io/v1" -}}
+{{- $version -}}
 {{- end -}}
-{{- end -}}
+
 
 {{- define "helpers.capabilities.istiopeerauthentication.apiVersion" -}}
 {{- $version := "security.istio.io/v1" -}}
 {{- with .Values.global -}}
-  {{- with .apiVersions -}}
+  {{- with .resourceApiVersions -}}
     {{- with .istioPeerAuthentication -}}
       {{- $version = . -}}
     {{- end -}}
@@ -186,30 +178,15 @@
 {{- $version -}}
 {{- end -}}
 
+
 {{- define "helpers.capabilities.istioauthorizationpolicy.apiVersion" -}}
 {{- $version := "security.istio.io/v1" -}}
 {{- with .Values.global -}}
-  {{- with .apiVersions -}}
+  {{- with .resourceApiVersions -}}
     {{- with .istioAuthorizationPolicy -}}
       {{- $version = . -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
 {{- $version -}}
-{{- end -}}
-
-{{- define "helpers.capabilities.gatewayclass.apiVersion" -}}
-{{- "gateway.networking.k8s.io/v1" -}}
-{{- end -}}
-
-{{- define "helpers.capabilities.gateway.apiVersion" -}}
-{{- "gateway.networking.k8s.io/v1" -}}
-{{- end -}}
-
-{{- define "helpers.capabilities.httproute.apiVersion" -}}
-{{- "gateway.networking.k8s.io/v1" -}}
-{{- end -}}
-
-{{- define "helpers.capabilities.istioenvoyfilter.apiVersion" -}}
-{{- "networking.istio.io/v1alpha3" -}}
 {{- end -}}
