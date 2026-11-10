@@ -13,22 +13,36 @@ metadata:
     {{- include "helpers.app.genericAnnotations" $ | indent 4 }}
     {{- with $gateway.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
 spec:
+  {{- with $gateway.selector }}
   selector:
-    {{- include "helpers.tplvalues.render" (dict "value" $gateway.selector "context" $) | nindent 4 }}
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
   servers:
-  {{- range $gateway.servers }}
+  {{- range required (printf "istiogateways.%s.servers is required" $host) $gateway.servers }}
   - hosts:
-    {{- range .hosts }}
+    {{- range required "Istio Gateway server hosts are required" .hosts }}
     - {{ include "helpers.tplvalues.render" (dict "value" . "context" $) | trim | quote }}
     {{- end }}
+    {{- with .name }}
+    name: {{ . | quote }}
+    {{- end }}
+    {{- with .bind }}
+    bind: {{ . | quote }}
+    {{- end }}
+    {{- with .defaultEndpoint }}
+    defaultEndpoint: {{ . | quote }}
+    {{- end }}
     port:
-      name: {{ .port.name }}
-      number: {{ .port.number }}
-      protocol: {{ .port.protocol }}
+      name: {{ required "Istio Gateway server port.name is required" .port.name | quote }}
+      number: {{ required "Istio Gateway server port.number is required" .port.number }}
+      protocol: {{ required "Istio Gateway server port.protocol is required" .port.protocol | quote }}
+      {{- if hasKey .port "targetPort" }}
+      targetPort: {{ .port.targetPort }}
+      {{- end }}
     {{- with .tls }}
     tls:
-    {{- toYaml . | nindent 6 }}
-    {{- end }} {{/* end with .tls */}}
+      {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 6 }}
+    {{- end }}
   {{- end }}
 {{- end }}
-{{- end -}}
+{{- end }}
