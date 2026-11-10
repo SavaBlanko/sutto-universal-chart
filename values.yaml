@@ -259,13 +259,6 @@ secrets: {}
   #      "arg": "value"
   #    }
 
-sealedSecrets: {}
-  # test:
-  #   encryptedData:
-  #     foo: Yy3LvlaCgEWV50VrNY4Aow/X
-  #     bar: |-
-  #       fjVmoxIulUKX5IAserbCpw/Y
-
 configMaps: {}
   #some-cm:
   #  labels:
@@ -799,3 +792,27 @@ certificates: {}
 #    issuerRef:
 #      originalName: letsencrypt-prod
 #      kind: ClusterIssuer
+
+sealedSecrets: {}
+#  dockercreds:
+#    disabled: false
+#    name: dockercreds
+#    type: kubernetes.io/dockerconfigjson
+#    annotations:
+#      sealedsecrets.bitnami.com/cluster-wide: "true"
+#    encryptedData:
+#      .dockerconfigjson: <>
+#  dockercreds-new:
+#    disabled: false
+#    name: dockercreds-hahahah
+#    type: kubernetes.io/dockerconfigjson
+#    annotations:
+#      sealedsecrets.bitnami.com/cluster-wide: "true"
+#    encryptedData:
+#      .dockerconfigjson: <>
+#  test:
+#    disabled: false
+#    encryptedData:
+#      foo: Yy3LvlaCgEWV50VrNY4Aow/X
+#      bar: |-
+#        fjVmoxIulUKX5IAserbCpw/Y
