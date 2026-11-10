@@ -1,0 +1,25 @@
+{{- range $name, $network := .Values.networkattachmentdefinitions }}
+{{- if not ($network.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.networkattachmentdefinition.apiVersion" $ }}
+kind: NetworkAttachmentDefinition
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($network.name | default $name) "context" $) }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $network.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | nindent 4 }}
+    {{- with $network.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+spec:
+  {{- $config := required (printf "networkattachmentdefinitions.%s.config is required" $name) $network.config }}
+  {{- if kindIs "string" $config }}
+  config: |
+    {{- include "helpers.tplvalues.render" (dict "value" $config "context" $) | nindent 4 }}
+  {{- else }}
+  config: |
+    {{- $config | toJson | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

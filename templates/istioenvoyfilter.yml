@@ -1,0 +1,32 @@
+{{- range $name, $filter := .Values.istioenvoyfilters }}
+{{- if not ($filter.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.istioenvoyfilter.apiVersion" $ }}
+kind: EnvoyFilter
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($filter.name | default $name) "context" $) }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $filter.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | nindent 4 }}
+    {{- with $filter.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+spec:
+  {{- if hasKey $filter "priority" }}
+  priority: {{ $filter.priority }}
+  {{- end }}
+  {{- with $filter.workloadSelector }}
+  workloadSelector:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $filter.targetRefs }}
+  targetRefs:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $filter.configPatches }}
+  configPatches:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}
