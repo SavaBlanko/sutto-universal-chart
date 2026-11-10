@@ -1,0 +1,41 @@
+{{- range $name, $telemetry := .Values.istiotelemetries }}
+{{- if not ($telemetry.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.istiotelemetry.apiVersion" $ }}
+kind: Telemetry
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($telemetry.name | default $name) "context" $) }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $telemetry.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | indent 4 }}
+    {{- with $telemetry.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+spec:
+  {{- with $telemetry.accessLogging }}
+  accessLogging:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $telemetry.metrics }}
+  metrics:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $telemetry.tracing }}
+  tracing:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $telemetry.selector }}
+  selector:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $telemetry.targetRef }}
+  targetRef:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $telemetry.targetRefs }}
+  targetRefs:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

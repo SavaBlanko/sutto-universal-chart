@@ -190,3 +190,16 @@
 {{- end -}}
 {{- $version -}}
 {{- end -}}
+
+
+{{- define "helpers.capabilities.istiotelemetry.apiVersion" -}}
+{{- $version := "telemetry.istio.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .istioTelemetry -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}

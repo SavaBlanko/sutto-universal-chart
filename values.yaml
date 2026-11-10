@@ -14,6 +14,8 @@
 #    istioDestinationRule: networking.istio.io/v1
 #    istioPeerAuthentication: security.istio.io/v1
 #    istioAuthorizationPolicy: security.istio.io/v1
+#    istioTelemetry: telemetry.istio.io/v1
+
 # generic - values that uses by all sutto-universal-chart templates
 generic:
   labels: {}
@@ -725,6 +727,53 @@ istioenvoyfilters: {}
 #                    key: x-powered-by
 #                    value: my-app
 #                  append_action: OVERWRITE_IF_EXISTS_OR_ADD
+
+istiotelemetries: {}
+#tracing for workloads
+#  nginx:
+#    disabled: false
+#    selector:
+#      matchLabels:
+#        app: nginx
+#    accessLogging:
+#      - providers:
+#          - name: envoy
+#        disabled: false
+#        filter:
+#          expression: 'response.code >= 400'
+#    metrics:
+#      - providers:
+#          - name: prometheus
+#        overrides:
+#          - match:
+#              metric: REQUEST_COUNT
+#              mode: SERVER
+#            tagOverrides:
+#              destination_service:
+#                operation: UPSERT
+#                value: 'request.host'
+#    tracing:
+#      - providers:
+#          - name: otel
+#        randomSamplingPercentage: 10
+#        customTags:
+#          environment:
+#            literal:
+#              value: development
+#for an entire namespace
+#  namespace-default:
+#    accessLogging:
+#      - providers:
+#          - name: envoy
+#for Gateway-specific Telemetry
+#  gateway:
+#    targetRef:
+#      group: gateway.networking.k8s.io
+#      kind: Gateway
+#      name: main
+#    accessLogging:
+#      - providers:
+#          - name: envoy
 
 networkattachmentdefinitions: {}
 #  macvlan-conf01:
