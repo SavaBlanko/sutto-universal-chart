@@ -1,47 +1,36 @@
-{{- range $host, $destinationrule := .Values.istiodestinationrules }}
+{{- range $name, $rule := .Values.istiodestinationrules }}
+{{- if not ($rule.disabled | default false) }}
 ---
 apiVersion: {{ include "helpers.capabilities.istiodestinationrule.apiVersion" $ }}
 kind: DestinationRule
 metadata:
-  name: {{ include "helpers.app.fullname" (dict "name" ($destinationrule.name | default $host) "context" $) }}
+  name: {{ include "helpers.app.fullname" (dict "name" ($rule.name | default $name) "context" $) }}
   namespace: {{ $.Release.Namespace | quote }}
   labels:
     {{- include "helpers.app.labels" $ | nindent 4 }}
-    {{- with $destinationrule.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+    {{- with $rule.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
   annotations:
     {{- include "helpers.app.genericAnnotations" $ | indent 4 }}
-    {{- with $destinationrule.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+    {{- with $rule.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
 spec:
-  host: {{ $destinationrule.host | quote }}
-  trafficPolicy:
-    {{- with $destinationrule.trafficPolicy }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- if $destinationrule.subsets }}
-  subsets:
-    {{- range $subset := $destinationrule.subsets }}
-    - name: {{ $subset.name }}
-      labels:
-        {{- range $key, $value := $subset.labels }}
-        {{ $key }}: {{ $value | quote }}
-        {{- end }}
-      trafficPolicy:
-        {{- with $subset.trafficPolicy }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
-    {{- end }}
-  {{- end }}
-  {{- if $destinationrule.exportTo }}
+  host: {{ include "helpers.tplvalues.render" (dict "value" (required (printf "istiodestinationrules.%s.host is required" $name) $rule.host) "context" $) | trim | quote }}
+  {{- with $rule.exportTo }}
   exportTo:
-    {{- range $exportTo := $destinationrule.exportTo }}
-    - {{ $exportTo | quote }}
+    {{- range . }}
+    - {{ include "helpers.tplvalues.render" (dict "value" . "context" $) | trim | quote }}
     {{- end }}
   {{- end }}
-  {{- with $destinationrule.workloadSelector }}
-  workloadSelector:
-    matchLabels:
-      {{- range $key, $value := .matchLabels }}
-      {{ $key }}: {{ $value | quote }}
-      {{- end }}
+  {{- with $rule.trafficPolicy }}
+  trafficPolicy:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
   {{- end }}
+  {{- with $rule.subsets }}
+  subsets:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $rule.workloadSelector }}
+  workloadSelector:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+{{- end }}
 {{- end }}

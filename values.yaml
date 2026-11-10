@@ -596,41 +596,40 @@ istiovirtualservices: {}
 
 istiodestinationrules: {}
 #  nginx:
-#    name: nginx-destinationrule
-#    host: "nginx-service.default.svc.cluster.local"
+#    disabled: false
+#    host: 'nginx.{{ $.Release.Namespace }}.svc.cluster.local'
+#    exportTo:
+#      - "."
 #    trafficPolicy:
 #      loadBalancer:
-#        simple: ROUND_ROBIN
+#        simple: LEAST_REQUEST
 #      connectionPool:
+#        tcp:
+#          maxConnections: 100
+#          connectTimeout: 5s
 #        http:
-#          http1MaxPendingRequests: 500
-#          maxRequestsPerConnection: 50
+#          http1MaxPendingRequests: 100
+#          http2MaxRequests: 1000
 #      outlierDetection:
-#        consecutiveGatewayErrors: 3
-#        interval: 5s
-#        baseEjectionTime: 15s
+#        consecutive5xxErrors: 5
+#        interval: 10s
+#        baseEjectionTime: 30s
+#        maxEjectionPercent: 50
+#      tls:
+#        mode: ISTIO_MUTUAL
+#      portLevelSettings:
+#        - port:
+#            number: 8080
+#          connectionPool:
+#            tcp:
+#              maxConnections: 50
 #    subsets:
 #      - name: v1
 #        labels:
-#          app: nginx
-#        trafficPolicy:
-#          loadBalancer:
-#            simple: LEAST_CONN
-#          connectionPool:
-#            tcp:
-#              maxConnections: 200
+#          version: v1
 #      - name: v2
 #        labels:
 #          version: v2
-#        trafficPolicy:
-#          loadBalancer:
-#            simple: RANDOM
-#          connectionPool:
-#            http:
-#              http2MaxRequests: 2000
-#    exportTo:
-#      - "."
-#      - "another-namespace"
 
 istiopeerauthentications: {}
 #  default:
@@ -788,3 +787,15 @@ kgatewaytrafficpolicies: {}
 #        - connect-failure
 #    timeouts:
 #      request: 30s
+
+certificates: {}
+#  ingress-infra-tls:
+#    disabled: false
+#    namespace: istio-system
+#    secretName: tls
+#    dnsNames:
+#      - example.com
+#      - "*.example.com"
+#    issuerRef:
+#      originalName: letsencrypt-prod
+#      kind: ClusterIssuer
