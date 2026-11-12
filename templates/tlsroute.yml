@@ -1,0 +1,18 @@
+{{- range $name, $route := .Values.tlsroutes }}
+{{- if not ($route.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.tlsroute.apiVersion" $ }}
+kind: TLSRoute
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($route.name | default $name) "context" $) }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $route.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | indent 4 }}
+    {{- with $route.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+spec:
+  {{- include "helpers.tplvalues.render" (dict "value" ($route.spec | default dict) "context" $) | nindent 2 }}
+{{- end }}
+{{- end }}

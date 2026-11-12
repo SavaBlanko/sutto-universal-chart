@@ -139,7 +139,6 @@
 {{- $version -}}
 {{- end -}}
 
-
 {{- define "helpers.capabilities.istiovirtualservice.apiVersion" -}}
 {{- $version := "networking.istio.io/v1" -}}
 {{- with .Values.global -}}
@@ -151,7 +150,6 @@
 {{- end -}}
 {{- $version -}}
 {{- end -}}
-
 
 {{- define "helpers.capabilities.istiodestinationrule.apiVersion" -}}
 {{- $version := "networking.istio.io/v1" -}}
@@ -165,7 +163,6 @@
 {{- $version -}}
 {{- end -}}
 
-
 {{- define "helpers.capabilities.istiopeerauthentication.apiVersion" -}}
 {{- $version := "security.istio.io/v1" -}}
 {{- with .Values.global -}}
@@ -177,7 +174,6 @@
 {{- end -}}
 {{- $version -}}
 {{- end -}}
-
 
 {{- define "helpers.capabilities.istioauthorizationpolicy.apiVersion" -}}
 {{- $version := "security.istio.io/v1" -}}
@@ -191,12 +187,157 @@
 {{- $version -}}
 {{- end -}}
 
-
 {{- define "helpers.capabilities.istiotelemetry.apiVersion" -}}
 {{- $version := "telemetry.istio.io/v1" -}}
 {{- with .Values.global -}}
   {{- with .resourceApiVersions -}}
     {{- with .istioTelemetry -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+
+{{- define "helpers.capabilities.ciliumloadbalancerippool.apiVersion" -}}
+{{- $version := "cilium.io/v2" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .ciliumLoadBalancerIPPool -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.ciliuml2announcementpolicy.apiVersion" -}}
+{{- $version := "cilium.io/v2alpha1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .ciliumL2AnnouncementPolicy -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.ciliumpodippool.apiVersion" -}}
+{{- $version := "cilium.io/v2alpha1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .ciliumPodIPPool -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.ciliumnetworkpolicy.apiVersion" -}}
+{{- $version := "cilium.io/v2" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .ciliumNetworkPolicy -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.ciliumclusterwidenetworkpolicy.apiVersion" -}}
+{{- $version := "cilium.io/v2" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .ciliumClusterwideNetworkPolicy -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+
+{{- define "helpers.capabilities.gatewayclass.apiVersion" -}}
+{{- $version := "gateway.networking.k8s.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .gatewayClass -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.gateway.apiVersion" -}}
+{{- $version := "gateway.networking.k8s.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .gateway -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.httproute.apiVersion" -}}
+{{- $version := "gateway.networking.k8s.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .httpRoute -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.grpcroute.apiVersion" -}}
+{{- $version := "gateway.networking.k8s.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .grpcRoute -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.udproute.apiVersion" -}}
+{{- $version := "gateway.networking.k8s.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .udpRoute -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.tlsroute.apiVersion" -}}
+{{- $version := "gateway.networking.k8s.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .tlsRoute -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.tcproute.apiVersion" -}}
+{{- $version := "gateway.networking.k8s.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .tcpRoute -}}
       {{- $version = . -}}
     {{- end -}}
   {{- end -}}

@@ -1,0 +1,17 @@
+{{- range $name, $policy := .Values.ciliumclusterwidenetworkpolicies }}
+{{- if not ($policy.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.ciliumclusterwidenetworkpolicy.apiVersion" $ }}
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($policy.name | default $name) "context" $) }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $policy.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | indent 4 }}
+    {{- with $policy.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+spec:
+  {{- include "helpers.tplvalues.render" (dict "value" ($policy.spec | default dict) "context" $) | nindent 2 }}
+{{- end }}
+{{- end }}

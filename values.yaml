@@ -15,6 +15,18 @@
 #    istioPeerAuthentication: security.istio.io/v1
 #    istioAuthorizationPolicy: security.istio.io/v1
 #    istioTelemetry: telemetry.istio.io/v1
+#    ciliumLoadBalancerIPPool: cilium.io/v2
+#    ciliumL2AnnouncementPolicy: cilium.io/v2alpha1
+#    ciliumPodIPPool: cilium.io/v2alpha1
+#    ciliumNetworkPolicy: cilium.io/v2
+#    ciliumClusterwideNetworkPolicy: cilium.io/v2
+#    gatewayClass: gateway.networking.k8s.io/v1
+#    gateway: gateway.networking.k8s.io/v1
+#    httpRoute: gateway.networking.k8s.io/v1
+#    grpcRoute: gateway.networking.k8s.io/v1
+#    tcpRoute: gateway.networking.k8s.io/v1
+#    udpRoute: gateway.networking.k8s.io/v1
+#    tlsRoute: gateway.networking.k8s.io/v1
 
 # generic - values that uses by all sutto-universal-chart templates
 generic:
@@ -701,6 +713,66 @@ httproutes: {}
 #          - serviceName: http
 #            servicePort: 80 # TODO
 
+grpcroutes: {}
+#  hub:
+#    disabled: false
+#    spec:
+#      parentRefs:
+#        - name: main
+#          sectionName: grpc
+#      hostnames:
+#        - grpc.example.com
+#      rules:
+#        - name: hub-grpc
+#          matches:
+#            - method:
+#                type: Exact
+#                service: nginx.v1.NginxService
+#                method: GetStatus
+#          backendRefs:
+#            - name: nginx
+#              port: 50051
+#              weight: 1
+
+tcproutes: {}
+#  postgres:
+#    disabled: false
+#    spec:
+#      parentRefs:
+#        - name: main
+#          sectionName: postgres
+#      rules:
+#        - backendRefs:
+#            - name: postgres
+#              port: 5432
+
+tlsroutes: {}
+#  nginx:
+#    disabled: false
+#    spec:
+#      hostnames:
+#        - nginx.example.com
+#      parentRefs:
+#        - name: main
+#          sectionName: tls
+#      rules:
+#        - backendRefs:
+#            - name: hub
+#              port: 443
+
+udproutes: {}
+#  dns:
+#    disabled: false
+#    spec:
+#      parentRefs:
+#        - name: main
+#          sectionName: udp
+#      rules:
+#        - backendRefs:
+#            - name: dns
+#              port: 5353
+#              weight: 1
+
 istioenvoyfilters: {}
 #  gateway-response-headers:
 #    disabled: false
@@ -812,7 +884,91 @@ networkattachmentdefinitions: {}
 #          ]
 #        }
 #      }
-#
+
+ciliumloadbalancerippools: {}
+#  ingress:
+#    disabled: false
+#    specDisabled: false
+#    allowFirstLastIPs: "No"
+#    blocks:
+#      - cidr: 192.168.100.0/24
+#    serviceSelector:
+#      matchLabels:
+#        lb-pool: ingress
+
+ciliuml2announcementpolicies: {}
+#  ingress:
+#    disabled: false
+#    externalIPs: false
+#    loadBalancerIPs: true
+#    interfaces:
+#      - eth0
+#    nodeSelector:
+#      matchLabels:
+#        kubernetes.io/os: linux
+#    serviceSelector:
+#      matchLabels:
+#        lb-pool: ingress
+
+ciliumpodippools: {}
+#  workloads:
+#    disabled: false
+#    ipv4:
+#      cidrs:
+#        - 10.100.0.0/16
+#      maskSize: 24
+
+ciliumclusterwidenetworkpolicies: {}
+#  allow-dns:
+#    disabled: false
+#    spec:
+#      description: "Allow DNS egress cluster-wide"
+#      endpointSelector: {}
+#      egress:
+#        - toEndpoints:
+#            - matchLabels:
+#                k8s:io.kubernetes.pod.namespace: kube-system
+#                k8s:k8s-app: kube-dns
+#          toPorts:
+#            - ports:
+#                - port: "53"
+#                  protocol: UDP
+#                - port: "53"
+#                  protocol: TCP
+#              rules:
+#                dns:
+#                  - matchPattern: "*"
+
+ciliumnetworkpolicies: {}
+#  nginx:
+#    disabled: false
+#    spec:
+#      description: "Allow ingress to nginx and DNS egress"
+#      endpointSelector:
+#        matchLabels:
+#          app: nginx
+#      ingress:
+#        - fromEndpoints:
+#            - matchLabels:
+#                app: gateway
+#          toPorts:
+#            - ports:
+#                - port: "8080"
+#                  protocol: TCP
+#      egress:
+#        - toEndpoints:
+#            - matchLabels:
+#                k8s:io.kubernetes.pod.namespace: kube-system
+#                k8s:k8s-app: kube-dns
+#          toPorts:
+#            - ports:
+#                - port: "53"
+#                  protocol: UDP
+#                - port: "53"
+#                  protocol: TCP
+#              rules:
+#                dns:
+#                  - matchPattern: "*"
 
 kgatewaytrafficpolicies: {}
 #  app:

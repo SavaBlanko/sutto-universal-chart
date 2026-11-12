@@ -1,0 +1,24 @@
+{{- range $name, $pool := .Values.ciliumpodippools }}
+{{- if not ($pool.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.ciliumpodippool.apiVersion" $ }}
+kind: CiliumPodIPPool
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($pool.name | default $name) "context" $) }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $pool.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | indent 4 }}
+    {{- with $pool.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+spec:
+  {{- with $pool.ipv4 }}
+  ipv4:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $pool.ipv6 }}
+  ipv6:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

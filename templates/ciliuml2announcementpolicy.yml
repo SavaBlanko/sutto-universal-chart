@@ -1,0 +1,34 @@
+{{- range $name, $policy := .Values.ciliuml2announcementpolicies }}
+{{- if not ($policy.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.ciliuml2announcementpolicy.apiVersion" $ }}
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($policy.name | default $name) "context" $) }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $policy.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | indent 4 }}
+    {{- with $policy.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+spec:
+  {{- if hasKey $policy "externalIPs" }}
+  externalIPs: {{ $policy.externalIPs }}
+  {{- end }}
+  {{- with $policy.interfaces }}
+  interfaces:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- if hasKey $policy "loadBalancerIPs" }}
+  loadBalancerIPs: {{ $policy.loadBalancerIPs }}
+  {{- end }}
+  {{- with $policy.nodeSelector }}
+  nodeSelector:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  {{- with $policy.serviceSelector }}
+  serviceSelector:
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}
