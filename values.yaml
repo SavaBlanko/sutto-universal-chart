@@ -27,6 +27,10 @@
 #    tcpRoute: gateway.networking.k8s.io/v1
 #    udpRoute: gateway.networking.k8s.io/v1
 #    tlsRoute: gateway.networking.k8s.io/v1
+#    fluxcdOciRepository: source.toolkit.fluxcd.io/v1
+#    fluxcdHelmChart: source.toolkit.fluxcd.io/v1
+#    fluxcdHelmRepository: source.toolkit.fluxcd.io/v1
+#    fluxcdHelmRelease: helm.toolkit.fluxcd.io/v2
 
 # generic - values that uses by all sutto-universal-chart templates
 generic:
@@ -310,8 +314,6 @@ cronJobs: {}
 #    schedule: "*/5 * * * *"
 #    command: "php yii crontab/generate-data"
 #    singleOnly: true
-#    commandDurationAlert: 600
-#    commandMaxDuration: 800
 #    volumeMounts:
 #    - name: secret-file
 #      mountPath: /etc/app
@@ -331,8 +333,6 @@ jobsGeneral: {}
 jobs: {}
 #  refresh-cache:
 #    command: "php yii crontab/refresh-cache"
-#    commandDurationAlert: 30
-#    commandMaxDuration: 60
 
 serviceAccountGeneral: {}
 #  annotations:
@@ -1021,3 +1021,94 @@ sealedSecrets: {}
 #      foo: Yy3LvlaCgEWV50VrNY4Aow/X
 #      bar: |-
 #        fjVmoxIulUKX5IAserbCpw/Y
+
+fluxcdocirepositories: {}
+#  application:
+#    disabled: false
+#    spec:
+#      interval: 5m
+#      url: oci://ghcr.io/example/charts/application
+#      ref:
+#        tag: 1.2.3
+#  private:
+#    disabled: false
+#    spec:
+#      interval: 10m
+#      url: oci://registry.example.com/helm/application
+#      ref:
+#        semver: ">=1.0.0 <2.0.0"
+#      secretRef:
+#        name: registry-credentials
+#      timeout: 60s
+#  verified:
+#    disabled: false
+#    spec:
+#      interval: 5m
+#      url: oci://registry.example.com/artifacts/application
+#      ref:
+#        tag: stable
+#      verify:
+#        provider: cosign
+#        matchOIDCIdentity:
+#          - issuer: https://token.actions.githubusercontent.com
+#            subject: "https://github.com/example/application/.github/workflows/release.yml@refs/heads/main"
+
+fluxcdhelmcharts: {}
+#  nginx:
+#    disabled: false
+#    spec:
+#      chart: nginx
+#      version: "18.2.0"
+#      interval: 5m
+#      reconcileStrategy: ChartVersion
+#      sourceRef:
+#        kind: HelmRepository
+#        name: bitnami
+#      suspend: false
+#  application:
+#    spec:
+#      chart: ./charts/application
+#      interval: 5m
+#      reconcileStrategy: Revision
+#      sourceRef:
+#        kind: GitRepository
+#        name: application
+#      valuesFiles:
+#        - values.yaml
+#        - values-production.yaml
+#      ignoreMissingValuesFiles: false
+
+fluxcdhelmreleases: {}
+#  nginx:
+#    disabled: false
+#    spec:
+#      interval: 5m
+#      releaseName: nginx
+#      targetNamespace: web
+#      chart:
+#        spec:
+#          chart: nginx
+#          version: "18.2.0"
+#          sourceRef:
+#            kind: HelmRepository
+#            name: bitnami
+#      install:
+#        createNamespace: true
+#        remediation:
+#          retries: 3
+#      upgrade:
+#        remediation:
+#          retries: 3
+#      values:
+#        replicaCount: 2
+#        service:
+#          type: ClusterIP
+
+fluxcdhelmrepositories: {}
+#  bitnami:
+#    disabled: false
+#    spec:
+#      interval: 10m
+#      url: https://charts.bitnami.com/bitnami
+#      type: default
+#      timeout: 60s

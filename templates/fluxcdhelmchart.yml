@@ -1,0 +1,18 @@
+{{- range $name, $chart := .Values.fluxcdhelmcharts }}
+{{- if not ($chart.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.helmchart.apiVersion" $ }}
+kind: HelmChart
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($chart.name | default $name) "context" $) }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $chart.labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | nindent 4 }}
+    {{- with $chart.annotations }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
+spec:
+  {{- include "helpers.tplvalues.render" (dict "value" (required (printf "fluxcdhelmcharts.%s.spec is required" $name) $chart.spec) "context" $) | nindent 2 }}
+{{- end }}
+{{- end }}

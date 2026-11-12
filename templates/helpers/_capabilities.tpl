@@ -344,3 +344,52 @@
 {{- end -}}
 {{- $version -}}
 {{- end -}}
+
+
+{{- define "helpers.capabilities.fluxcdocirepository.apiVersion" -}}
+{{- $version := "source.toolkit.fluxcd.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .fluxcdOciRepository -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.fluxcdhelmrepository.apiVersion" -}}
+{{- $version := "source.toolkit.fluxcd.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .fluxcdHelmRepository -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.fluxcdhelmchart.apiVersion" -}}
+{{- $version := "source.toolkit.fluxcd.io/v1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .fluxcdHelmChart -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
+
+{{- define "helpers.capabilities.fluxcdhelmrelease.apiVersion" -}}
+{{- $version := "helm.toolkit.fluxcd.io/v2" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .fluxcdHelmRelease -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}
