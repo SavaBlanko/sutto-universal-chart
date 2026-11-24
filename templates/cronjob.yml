@@ -7,6 +7,7 @@
 {{- $cronJobs = .Values.cronJobs -}}
 {{- end -}}
 {{- range $name, $job := $cronJobs }}
+{{- if not ($job.disabled | default false) }}
 {{- $cjName := include "helpers.app.fullname" (dict "name" $name "context" $) }}
 ---
 apiVersion: {{ include "helpers.capabilities.cronJob.apiVersion" $ }}
@@ -81,5 +82,6 @@ spec:
         spec:
           {{- include "helpers.pod" (dict "value" . "general" $general "name" $name "context" $) | indent 10 }}
           restartPolicy: {{ .restartPolicy | default "Never" }}
+{{- end }}
 {{- end }}
 {{- end }}

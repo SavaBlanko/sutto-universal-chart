@@ -393,3 +393,15 @@
 {{- end -}}
 {{- $version -}}
 {{- end -}}
+
+{{- define "helpers.capabilities.networkchaos.apiVersion" -}}
+{{- $version := "chaos-mesh.org/v1alpha1" -}}
+{{- with .Values.global -}}
+  {{- with .resourceApiVersions -}}
+    {{- with .networkChaos -}}
+      {{- $version = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $version -}}
+{{- end -}}

@@ -1,7 +1,7 @@
 {{- range $name, $repository := .Values.fluxcdocirepositories }}
 {{- if not ($repository.disabled | default false) }}
 ---
-apiVersion: {{ include "helpers.capabilities.ocirepository.apiVersion" $ }}
+apiVersion: {{ include "helpers.capabilities.fluxcdocirepository.apiVersion" $ }}
 kind: OCIRepository
 metadata:
   name: {{ include "helpers.app.fullname" (dict "name" ($repository.name | default $name) "context" $) }}

@@ -1,7 +1,7 @@
 {{- range $name, $repository := .Values.fluxcdhelmrepositories }}
 {{- if not ($repository.disabled | default false) }}
 ---
-apiVersion: {{ include "helpers.capabilities.helmrepository.apiVersion" $ }}
+apiVersion: {{ include "helpers.capabilities.fluxcdhelmrepository.apiVersion" $ }}
 kind: HelmRepository
 metadata:
   name: {{ include "helpers.app.fullname" (dict "name" ($repository.name | default $name) "context" $) }}

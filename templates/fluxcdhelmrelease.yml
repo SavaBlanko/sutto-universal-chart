@@ -1,7 +1,7 @@
 {{- range $name, $release := .Values.fluxcdhelmreleases }}
 {{- if not ($release.disabled | default false) }}
 ---
-apiVersion: {{ include "helpers.capabilities.helmrelease.apiVersion" $ }}
+apiVersion: {{ include "helpers.capabilities.fluxcdhelmrelease.apiVersion" $ }}
 kind: HelmRelease
 metadata:
   name: {{ include "helpers.app.fullname" (dict "name" ($release.name | default $name) "context" $) }}

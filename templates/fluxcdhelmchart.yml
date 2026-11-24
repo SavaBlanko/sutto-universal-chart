@@ -1,7 +1,7 @@
 {{- range $name, $chart := .Values.fluxcdhelmcharts }}
 {{- if not ($chart.disabled | default false) }}
 ---
-apiVersion: {{ include "helpers.capabilities.helmchart.apiVersion" $ }}
+apiVersion: {{ include "helpers.capabilities.fluxcdhelmchart.apiVersion" $ }}
 kind: HelmChart
 metadata:
   name: {{ include "helpers.app.fullname" (dict "name" ($chart.name | default $name) "context" $) }}

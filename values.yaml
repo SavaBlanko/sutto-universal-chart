@@ -31,6 +31,7 @@
 #    fluxcdHelmChart: source.toolkit.fluxcd.io/v1
 #    fluxcdHelmRepository: source.toolkit.fluxcd.io/v1
 #    fluxcdHelmRelease: helm.toolkit.fluxcd.io/v2
+#    networkChaos: "chaos-mesh.org/v1alpha1"
 
 # generic - values that uses by all sutto-universal-chart templates
 generic:
@@ -311,6 +312,7 @@ hooks: {}
 cronJobsGeneral: {}
 cronJobs: {}
 #  generate-data:
+#    disabled: false
 #    schedule: "*/5 * * * *"
 #    command: "php yii crontab/generate-data"
 #    singleOnly: true
@@ -326,6 +328,7 @@ cronJobs: {}
 #        mode: 0600
 #        path: app.conf
 #  auto-sender:
+#    disabled: false
 #    schedule: "*/5 * * * *"
 #    command: "php yii crontab/auto-sender"
 
@@ -1112,3 +1115,29 @@ fluxcdhelmrepositories: {}
 #      url: https://charts.bitnami.com/bitnami
 #      type: default
 #      timeout: 60s
+
+networkchaos: {}
+#  myapp-postgres-delay:
+#    disabled: false
+#    name: myapp-postgres-delay-override
+#    spec:
+#      action: delay
+#      mode: all
+#      selector:
+#        namespaces:
+#          - "{{ $.Release.Namespace }}"
+#        labelSelectors:
+#          app: myapp
+#      direction: to
+#      target:
+#        mode: all
+#        selector:
+#          namespaces:
+#            - "{{ $.Release.Namespace }}"
+#          labelSelectors:
+#            app.kubernetes.io/name: postgresql
+#      delay:
+#        latency: "200ms"
+#        jitter: "50ms"
+#        correlation: "25"
+#      duration: "60s"

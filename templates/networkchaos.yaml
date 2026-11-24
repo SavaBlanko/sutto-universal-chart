@@ -1,0 +1,22 @@
+{{- range $name, $networkchaos := .Values.networkchaos }}
+{{- if not ($networkchaos.disabled | default false) }}
+---
+apiVersion: {{ include "helpers.capabilities.networkchaos.apiVersion" $ }}
+kind: NetworkChaos
+metadata:
+  name: {{ include "helpers.app.fullname" (dict "name" ($networkchaos.name | default $name) "context" $) }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "helpers.app.labels" $ | nindent 4 }}
+    {{- with $networkchaos.labels }}
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "helpers.app.genericAnnotations" $ | nindent 4 }}
+    {{- with $networkchaos.annotations }}
+    {{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+spec:
+  {{- include "helpers.tplvalues.render" (dict "value" $networkchaos.spec "context" $) | nindent 2 }}
+{{- end }}
+{{- end -}}
